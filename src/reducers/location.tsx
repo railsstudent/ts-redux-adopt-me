@@ -1,10 +1,14 @@
-import { IAction } from "./interface";
+import { Reducer, AnyAction } from "redux";
 
-export default function location(state = 'Seattle, WA', action: IAction) {
+const initialState = 'Seattle, WA';
+
+const location: Reducer<string> = (state = initialState, action: AnyAction) => {
     switch (action.type) {
         case 'CHANGED_LOCATION':
             return action.payload
         default:
             return state
     }
-}
+};
+
+export default location;

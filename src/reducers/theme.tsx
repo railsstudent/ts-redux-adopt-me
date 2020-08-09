@@ -1,10 +1,18 @@
-import { IAction } from "./interface";
+import { AnyAction, Reducer } from "redux";
+import { ThemeState } from "./interface";
 
-export default function theme(state = { backgroundColor: 'green', color: 'black' }, action: IAction) {
+const initialState: ThemeState = {
+    backgroundColor: 'green',
+    color: 'black'
+}
+
+const theme: Reducer<ThemeState> = (state = initialState, action: AnyAction) => {
     switch (action.type) {
         case 'CHANGED_THEME':
             return action.payload
         default:
-            return state
+            return state   
     }
 }
+
+export default theme

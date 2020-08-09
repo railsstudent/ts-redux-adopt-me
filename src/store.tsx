@@ -1,7 +1,19 @@
-import { createStore } from 'redux';
+import { createStore, Store } from 'redux';
 import { composeWithDevTools } from 'redux-devtools-extension';
-import reducer from './reducers';
+import { reducers, ApplicationState } from './reducers';
 
-const store = () => createStore(reducer, composeWithDevTools({}))
+const composeEnhancers = composeWithDevTools({});
+
+const store: Store<ApplicationState> = createStore(
+    reducers, 
+    {
+        location: 'Seattle, WA',
+        theme: {
+            backgroundColor: 'green',
+            color: 'black'
+        }
+    },
+    composeEnhancers()
+)
 
 export default store;
