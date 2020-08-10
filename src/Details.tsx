@@ -1,9 +1,13 @@
 import React, { useState, useEffect, useContext, FunctionComponent } from 'react';
 import pet, { Photo } from "@frontendmasters/pet";
 import Carousel from "./Carousel";
-import ThemeContext from './ThemeContext';
+// import ThemeContext from './ThemeContext';
 import Modal from './Modal';
 import { navigate, RouteComponentProps } from '@reach/router';
+import { Action } from 'redux';
+import { ApplicationState, ThemeState } from './reducers';
+import { changeTheme } from './actionCreators';
+import { connect } from 'react-redux';
 
 interface IDetail {
     name: string,
@@ -14,9 +18,27 @@ interface IDetail {
     breed: string
 }
 
-const AdoptionModal: FunctionComponent<{ details: IDetail | null, url: string }> = ({ details, url }) => {
+interface IAdoptionModal {
+    details: IDetail | null;
+    url: string;
+    theme: ThemeState;
+}
+
+type ConnectDispatch =  (action: Action) => void
+
+const mapStateToProps = ({ theme }: ApplicationState) =>
+    ({
+        theme
+    });
+
+const mapDispatchToProps = (dispatch: ConnectDispatch) =>
+     ({
+        setTheme: (theme: ThemeState) => dispatch(changeTheme(theme))
+    })
+
+const AdoptionModal: FunctionComponent<IAdoptionModal> = ({ details, url, theme }) => {
     const [showModal, setShowModal] = useState(false);
-    const [{ backgroundColor, color }] = useContext(ThemeContext);
+    const { backgroundColor, color } = theme;
 
     const toggleModal = () => setShowModal(!showModal);
     const adopt = () => navigate(url);
@@ -49,14 +71,14 @@ const AdoptionModal: FunctionComponent<{ details: IDetail | null, url: string }>
     );
 }
 
-const Details: FunctionComponent<RouteComponentProps<{ id: string}>> = (props) => {
+const Details: FunctionComponent<RouteComponentProps<{ id: string, theme: ThemeState }>> = (props) => {
     const [details, setDetails] = useState(null as IDetail | null);
     const [loading, setLoading] = useState(true);
     const [url, setUrl] = useState('')
 
     useEffect(() => {
         setDetails(null)
-        if (!props.id) {
+        if (!props.id || !props.theme) {
             return
         }
 
@@ -68,7 +90,7 @@ const Details: FunctionComponent<RouteComponentProps<{ id: string}>> = (props) =
                         address: { city, state }
                     },
                     breeds: { primary: breed },
-                    url 
+                    url: adoptionUrl 
                 } = animal || { 
                     name: '', 
                     description: '',
@@ -92,14 +114,14 @@ const Details: FunctionComponent<RouteComponentProps<{ id: string}>> = (props) =
                     media,
                     breed,
                 });
-                setUrl(url)
+                setUrl(adoptionUrl)
                 setLoading(false);
             }, console.error)
     }, [props.id]);
 
     return (
-        loading ? <h1>Loading...</h1> : <AdoptionModal details={details} url={url} /> 
+        loading ? <h1>Loading...</h1> : <AdoptionModal details={details} url={url} theme={props.theme} /> 
     )
 }
 
-export default Details
+export default connect(mapStateToProps, mapDispatchToProps)(Details);
