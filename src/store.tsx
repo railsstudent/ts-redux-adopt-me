@@ -6,13 +6,7 @@ const composeEnhancers = composeWithDevTools({});
 
 const store: Store<ApplicationState> = createStore(
     reducers, 
-    {
-        location: 'Seattle, WA',
-        theme: {
-            backgroundColor: 'green',
-            color: 'black'
-        }
-    },
+    undefined,
     composeEnhancers()
 )
 

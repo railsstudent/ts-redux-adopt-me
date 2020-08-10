@@ -2,8 +2,8 @@ import { AnyAction, Reducer } from "redux";
 import { ThemeState } from "./interface";
 
 const initialState: ThemeState = {
-    backgroundColor: 'green',
-    color: 'black'
+    backgroundColor: 'darkblue',
+    color: 'peru'
 }
 
 const theme: Reducer<ThemeState> = (state = initialState, action: AnyAction) => {

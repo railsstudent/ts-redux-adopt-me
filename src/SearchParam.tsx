@@ -1,17 +1,42 @@
-import React, { useState, useEffect, useContext, FunctionComponent } from 'react'
+import React, { useState, useEffect, FunctionComponent } from 'react'
 import pet, { ANIMALS, Animal } from '@frontendmasters/pet'
 import useDropdown from './useDropdown';
 import Results from './Results';
-import ThemeContext from './ThemeContext';
 import { RouteComponentProps } from '@reach/router';
+import { connect } from 'react-redux';
+import { ThemeState, ApplicationState } from './reducers';
+import { Action } from 'redux';
+import { changeTheme, changePlace } from './actionCreators';
 
-const SearchParams: FunctionComponent<RouteComponentProps> = () => {    
-    const [location, setLocation] = useState('Seattle, WA');
+export type ConnectDispatch = (action: Action) => void;
+
+const mapStateToProps = ({ place, theme }: ApplicationState) => ({
+  place,
+  theme
+});
+
+const mapDispatchToProps = (dispatch: ConnectDispatch) => {
+  return ({
+    setTheme: (theme: ThemeState) => dispatch(changeTheme(theme)),
+    updatePlace: (place: string) => dispatch(changePlace(place))
+  });
+}
+
+interface ISearchParamsProps {
+  place: string,
+  updatePlace: (place: string) => void,
+  theme: ThemeState,
+  setTheme: (theme: ThemeState) => void
+}
+
+const SearchParams: FunctionComponent<RouteComponentProps<ISearchParamsProps>> = 
+  (props) => {    
     const [breeds, setBreeds] = useState([] as string[]);
     const [animal, AnimalDropdown] = useDropdown('Animal', 'dog', ANIMALS);
     const [breed, BreedDropdown, setBreed] = useDropdown('Breed', '', breeds);
     const [pets, setPets] = useState([] as Animal[]);
-    const [{ backgroundColor, color }, setTheme] = useContext(ThemeContext);
+    const { place, updatePlace, theme, setTheme } = props;
+    const { backgroundColor = 'darkblue', color = 'peru' } = theme || {};
 
     useEffect(() => {
       setBreeds([]);
@@ -25,7 +50,7 @@ const SearchParams: FunctionComponent<RouteComponentProps> = () => {
 
     const requestPets = async () => {
       const { animals } = await pet.animals({
-        location,
+        location: place,
         breed,
         type: animal
       });
@@ -35,16 +60,16 @@ const SearchParams: FunctionComponent<RouteComponentProps> = () => {
 
     return (
       <div className="search-params">
-        <h1>{location}</h1>
+        <h1>{place}</h1>
         <form onSubmit={(e) =>{ 
           e.preventDefault();
           requestPets();
         }}>
             <label htmlFor="location">
                 Location
-                <input id="location" value={location} 
+                <input id="location" value={place} 
                   placeholder="Location" 
-                  onChange={e => setLocation(e.target.value)} />
+                  onChange={e => updatePlace && updatePlace(e.target.value)} />
             </label>
             <AnimalDropdown />
             <BreedDropdown />
@@ -52,8 +77,8 @@ const SearchParams: FunctionComponent<RouteComponentProps> = () => {
               Theme
               <select
                 id="theme"
-                onChange={e => setTheme({ backgroundColor: e.target.value, color })}
-                onBlur={e => setTheme({ backgroundColor: e.target.value, color })}
+                onChange={e => setTheme && setTheme({ backgroundColor: e.target.value, color })}
+                onBlur={e => setTheme && setTheme({ backgroundColor: e.target.value, color })}
               >
                 <option value="darkblue">Dark Blue</option>
                 <option value="mediumorchid">Medium Orchid</option>
@@ -69,4 +94,4 @@ const SearchParams: FunctionComponent<RouteComponentProps> = () => {
     );
   }
   
-export default SearchParams
+export default connect(mapStateToProps, mapDispatchToProps)(SearchParams);

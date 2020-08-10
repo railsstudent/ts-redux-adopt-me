@@ -1,11 +1,10 @@
 import { ActionCreator } from "redux";
 import { IAction } from "../reducers";
 
-const changeLocation: ActionCreator<IAction> = (location: string) => {
+export const changePlace: ActionCreator<IAction> = (place: string) => {
     return {
         type: 'CHANGED_LOCATION',
-        payload: location
+        payload: place
     };
 }
 
-export default changeLocation;  

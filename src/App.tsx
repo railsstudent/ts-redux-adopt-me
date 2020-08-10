@@ -9,8 +9,7 @@ import store from './store';
 const App = () => {    
   return (
       <React.StrictMode>
-           <Provider store={store}>
- 
+        <Provider store={store}>
           <div>
             <header>
               <Link to="/">Adopt me!</Link>
@@ -21,7 +20,6 @@ const App = () => {
             </Router>
           </div>
           </Provider>
-
       </React.StrictMode>
   );
 };

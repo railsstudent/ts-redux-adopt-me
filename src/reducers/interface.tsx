@@ -13,6 +13,6 @@ export interface ThemeState {
 }
 
 export interface ApplicationState {
-    location: string; 
+    place: string; 
     theme: ThemeState
 }

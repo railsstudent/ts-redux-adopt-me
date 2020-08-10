@@ -1,10 +1,10 @@
 import { combineReducers, Reducer } from 'redux';
-import location from './location';
+import place from './place';
 import theme from './theme';
 import { ApplicationState } from './interface';
 
 export const reducers: Reducer<ApplicationState> = combineReducers<ApplicationState>({
-    location,
+    place,
     theme
 })
 
