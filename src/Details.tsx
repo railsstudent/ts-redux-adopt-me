@@ -1,11 +1,9 @@
-import React, { useState, useEffect, useContext, FunctionComponent } from 'react';
+import React, { useState, useEffect, FunctionComponent } from 'react';
 import pet, { Photo } from "@frontendmasters/pet";
 import Carousel from "./Carousel";
-// import ThemeContext from './ThemeContext';
 import Modal from './Modal';
 import { navigate, RouteComponentProps } from '@reach/router';
-import { Action } from 'redux';
-import { ApplicationState, ThemeState } from './reducers';
+import { ApplicationState, ThemeState, ConnectDispatch } from './reducers';
 import { changeTheme } from './actionCreators';
 import { connect } from 'react-redux';
 
@@ -21,10 +19,8 @@ interface IDetail {
 interface IAdoptionModal {
     details: IDetail | null;
     url: string;
-    theme: ThemeState;
+    theme?: ThemeState;
 }
-
-type ConnectDispatch =  (action: Action) => void
 
 const mapStateToProps = ({ theme }: ApplicationState) =>
     ({
@@ -38,14 +34,15 @@ const mapDispatchToProps = (dispatch: ConnectDispatch) =>
 
 const AdoptionModal: FunctionComponent<IAdoptionModal> = ({ details, url, theme }) => {
     const [showModal, setShowModal] = useState(false);
-    const { backgroundColor, color } = theme;
 
     const toggleModal = () => setShowModal(!showModal);
     const adopt = () => navigate(url);
 
-    if (!details) {
+    if (!details || !theme) {
         return null;
     }
+
+    const { backgroundColor, color } = theme;
 
     return (
         <div className="details">   

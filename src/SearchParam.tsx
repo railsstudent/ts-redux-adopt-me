@@ -4,11 +4,8 @@ import useDropdown from './useDropdown';
 import Results from './Results';
 import { RouteComponentProps } from '@reach/router';
 import { connect } from 'react-redux';
-import { ThemeState, ApplicationState } from './reducers';
-import { Action } from 'redux';
+import { ThemeState, ApplicationState, ConnectDispatch } from './reducers';
 import { changeTheme, changePlace } from './actionCreators';
-
-export type ConnectDispatch = (action: Action) => void;
 
 const mapStateToProps = ({ place, theme }: ApplicationState) => ({
   place,

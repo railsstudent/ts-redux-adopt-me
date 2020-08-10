@@ -1,4 +1,4 @@
-import { AnyAction } from "redux";
+import { AnyAction, Action } from "redux";
 
 export interface IAction extends AnyAction {
     type: string;
@@ -16,3 +16,5 @@ export interface ApplicationState {
     place: string; 
     theme: ThemeState
 }
+
+export type ConnectDispatch =  (action: Action) => void
